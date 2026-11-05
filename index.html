@@ -108,6 +108,7 @@ ul.doing{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
 .note{font-size:13px;color:var(--muted)}
 .row{display:flex;gap:10px}
 .row>*{flex:1}
+.row>.sharebtn{flex:0 0 54px;display:grid;place-items:center;padding:0}
 footer{text-align:center;font-size:12px;color:var(--on-board);opacity:.85;display:flex;flex-direction:column;gap:4px}
 footer a{color:inherit}
 </style>
@@ -311,11 +312,17 @@ function result(){
     <div class="row">
       <button class="btn ghost" id="share">결과 문구 복사</button>
       <button class="btn ghost" id="again">다시 하기</button>
+      <button class="btn ghost sharebtn" id="shareLink" aria-label="공유하기"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg></button>
     </div>
   </section>${footer()}`;
   $app.querySelectorAll(".copy").forEach(b=>b.onclick = ()=>copy(L.actions[+b.dataset.k].p, b, "복사됨", document.getElementById("p"+b.dataset.k)));
   document.getElementById("share").onclick = e=>copy(`육아 AI 레벨 테스트 결과: Lv.${lv} ${L.name}`, e.currentTarget, "복사했어요");
   document.getElementById("again").onclick = start;
+  document.getElementById("shareLink").onclick = e=>{
+    const url = "https://ybybgo.github.io/ai-level-test/", text = `나는 Lv.${lv} ${L.name}! 육아 AI 레벨 테스트 해보세요`;
+    if (navigator.share) navigator.share({title:"육아 AI 레벨 테스트", text, url}).catch(()=>{});
+    else copy(url, e.currentTarget, "✓");
+  };
   window.scrollTo(0,0);
 }
 
