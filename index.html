@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>육아 AI 레벨 테스트</title>
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="육아 AI 레벨 테스트">
+<meta property="og:description" content="육아하는 부모를 위한 AI 친화력 셀프체크. 12문항, 약 3분.">
+<meta property="og:url" content="https://ybybgo.github.io/ai-level-test/">
+<meta name="description" content="육아하는 부모를 위한 AI 친화력 셀프체크. 12문항, 약 3분.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gothic+A1:wght@400;500;700;800&display=swap">
+<style>
+/* Layout: one narrow phone column; mint dotted board (AI 생존일기 series look), white sticker cards with ink outlines */
+:root{
+  --board:#3DF5CC; --board-dot:#8DFBE2; --card:#FFFFFF; --ink:#111428; --muted:#4D5270;
+  --pink:#FF5FA8; --yellow:#FFD84A; --mint:#7FE3C4; --line:#111428; --soft:#E6F8F2;
+  --on-board:#111428;
+  --hard:4px 4px 0 var(--line);
+  --font-display:"Black Han Sans","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --font-body:"Gothic A1","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --board:#0E2B26; --board-dot:#173F37; --card:#16332E; --ink:#EFFBF7; --muted:#A9CFC4;
+    --line:#000000; --soft:#1E423B; --on-board:#F2F4FF; --hard:4px 4px 0 #FF5FA8; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --board:#0E2B26; --board-dot:#173F37; --card:#16332E; --ink:#EFFBF7; --muted:#A9CFC4;
+  --line:#000000; --soft:#1E423B; --on-board:#F2F4FF; --hard:4px 4px 0 #FF5FA8; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--board);background-image:radial-gradient(var(--board-dot) 1.6px,transparent 1.6px);background-size:22px 22px;color:var(--ink);font-family:var(--font-body);line-height:1.55;word-break:keep-all;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible,a:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
+#app{max-width:460px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px;display:flex;flex-direction:column;gap:16px}
+.screen{display:flex;flex-direction:column;gap:16px;animation:rise .22s ease-out}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.screen{animation:none}.opt{transition:none}}
+h1,h2,h3,p{margin:0}
+h1,h2{text-wrap:balance}
+.badge{align-self:flex-start;background:var(--pink);color:#fff;border:2.5px solid var(--line);border-radius:999px;padding:5px 14px;font-weight:800;font-size:14px;box-shadow:2px 2px 0 var(--line)}
+.card{background:var(--card);border:2.5px solid var(--line);border-radius:22px;box-shadow:var(--hard);padding:20px}
+.hero h1{font-family:var(--font-display);font-weight:400;font-size:clamp(34px,10vw,46px);line-height:1.12;color:var(--on-board)}
+.hero p.lead{color:var(--on-board);font-size:16px;opacity:.92}
+.meter{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.meter span{height:30px;border:2.5px solid var(--line);border-radius:8px;background:var(--soft);display:grid;place-items:center;font-family:var(--font-display);font-size:13px;color:var(--muted)}
+.meter span.on{background:var(--yellow);color:#111428}
+.meter span.me{background:var(--pink);color:#fff}
+.meter-cap{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+.facts{display:flex;gap:8px;flex-wrap:wrap}
+.fact{background:var(--yellow);color:#111428;border:2.5px solid var(--line);border-radius:12px;padding:6px 12px;font-weight:800;font-size:14px;transform:rotate(-1.5deg)}
+.fact:nth-child(2){transform:rotate(1.5deg);background:#FFFFFF}
+.btn{display:block;width:100%;text-align:center;background:var(--yellow);color:#111428;border:2.5px solid var(--line);border-radius:16px;padding:16px;font-weight:800;font-size:18px;box-shadow:var(--hard);text-decoration:none}
+.btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--line)}
+.btn.ghost{background:var(--card);color:var(--ink);font-size:16px;padding:13px}
+.small{font-size:13px;color:var(--muted)}
+.on-board{color:var(--on-board)}
+.top{display:flex;align-items:center;gap:12px}
+.back{width:40px;height:40px;border-radius:12px;background:var(--card);border:2.5px solid var(--line);font-size:18px;font-weight:800;flex:none}
+.back[disabled]{opacity:.35;cursor:default}
+.bar{flex:1;height:14px;border:2.5px solid var(--line);border-radius:999px;background:var(--card);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--pink);transition:width .25s}
+.count{font-family:var(--font-display);color:var(--on-board);font-size:18px;min-width:52px;text-align:right;font-variant-numeric:tabular-nums}
+.q h2{font-size:21px;line-height:1.4;font-weight:800}
+.q .tag{font-size:13px;font-weight:800;color:var(--pink);margin-bottom:6px}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{text-align:left;background:var(--card);border:2.5px solid var(--line);border-radius:16px;padding:14px 16px;font-size:16px;line-height:1.45;box-shadow:3px 3px 0 var(--line);transition:transform .12s,background .12s}
+.opt:hover{background:var(--soft)}
+.opt.picked{background:var(--yellow);color:#111428;transform:translate(2px,2px);box-shadow:1px 1px 0 var(--line)}
+.lv-big{font-family:var(--font-display);font-size:64px;line-height:1;color:var(--pink)}
+.res-name{font-family:var(--font-display);font-weight:400;font-size:32px;line-height:1.15}
+.res-desc{font-size:16px}
+.sec-title{font-weight:800;font-size:15px;color:var(--muted);letter-spacing:.02em}
+ul.doing{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.actions{display:flex;flex-direction:column;gap:12px}
+.action{border:2.5px solid var(--line);border-radius:16px;padding:14px;background:var(--soft);display:flex;flex-direction:column;gap:8px}
+.action h3{font-size:16px;font-weight:800}
+.action .ab{display:inline-block;background:var(--pink);color:#fff;border-radius:8px;padding:1px 8px;margin-right:6px;font-size:13px}
+.prompt{background:var(--card);border:2px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:15px;line-height:1.5;user-select:all}
+.copy{align-self:flex-start;background:var(--card);border:2px solid var(--line);border-radius:10px;padding:5px 12px;font-size:13px;font-weight:800}
+.lvup{background:var(--yellow);color:#111428;border:2.5px solid var(--line);border-radius:22px;box-shadow:var(--hard);padding:18px 18px 16px;display:flex;flex-direction:column;gap:10px;position:relative;margin-top:10px}
+.lvup-head{align-self:flex-start;margin-top:-32px;background:#111428;color:#FFD84A;border-radius:999px;padding:5px 14px;font-weight:800;font-size:14px}
+.lvup-sub{font-size:13px;font-weight:700;color:#4D5270}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.chk{display:flex;align-items:flex-start;gap:10px;cursor:pointer}
+.chk input{position:absolute;opacity:0;width:1px;height:1px}
+.chk .box{flex:none;width:24px;height:24px;border:2.5px solid #111428;border-radius:7px;background:#fff;margin-top:1px;display:grid;place-items:center}
+.chk input:checked+.box::after{content:"";width:6px;height:11px;border:solid #111428;border-width:0 3px 3px 0;transform:translateY(-1px) rotate(45deg)}
+.chk input:checked~.ct{text-decoration:line-through;text-decoration-thickness:2px}
+.chk input:focus-visible+.box{outline:3px solid #111428;outline-offset:2px}
+.ct{font-weight:800;font-size:16px;line-height:1.4}
+.pl{margin:6px 0 0 34px;display:flex;gap:8px;align-items:flex-start;font-size:13.5px;line-height:1.5;color:#3A3F5C}
+.pt{flex:1}
+.pt::before{content:"“"}.pt::after{content:"”"}
+.lvup .copy{flex:none;background:#fff;color:#111428;border:2px solid #111428;border-radius:8px;padding:2px 9px;font-size:12px}
+.lvup .note{color:#4D5270;font-size:12px}
+.or{text-align:center;font-weight:800;color:var(--muted);font-size:13px}
+.note{font-size:13px;color:var(--muted)}
+.row{display:flex;gap:10px}
+.row>*{flex:1}
+footer{text-align:center;font-size:12px;color:var(--on-board);opacity:.85;display:flex;flex-direction:column;gap:4px}
+footer a{color:inherit}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+const IG_HANDLE = "youbean.ko";
+
+// 점수: 0 검색창 / 1 물어보기 / 2 결과물 받기 / 3 컴퓨터 맡기기 / 4 도구 만들기·자동화
+// 선택지 순서는 매번 섞이고, 문장 길이와 말투를 비슷하게 맞춰 점수가 티 나지 않게 했다.
+const QUESTIONS = [
+  {tag:"이유식", q:"8개월 아기한테 처음 줄 과일, 뭐부터 줄지 정할 때 나는?", o:[
+    ["맘카페에서 비슷한 글을 찾아 읽어본다",0],
+    ["AI한테 \"8개월 과일 뭐 돼?\" 하고 물어본다",1],
+    ["AI한테 일주일 과일 식단표를 만들어 달라고 한다",2],
+    ["노트북 AI가 내 엑셀 식단표를 열어서 다음 주 칸까지 채워준다",3]]},
+  {tag:"어린이집", q:"알림장 앱(키즈노트 등)에 다음 달 행사 가정통신문이 올라왔다.", o:[
+    ["캡처해서 AI에 올리고 날짜랑 준비물만 뽑아 달라고 한다",2],
+    ["앱에서 읽고 날짜만 따로 기억해 둔다",0],
+    ["모르는 말이 나오면 그 부분만 AI한테 물어본다",1],
+    ["AI가 통신문을 읽고 내 캘린더에 일정까지 넣어둔다",3]]},
+  {tag:"내 폰", q:"내 폰에 있는 AI 앱, 솔직하게 말하면?", o:[
+    ["없다. 검색창이면 충분하다",0],
+    ["하나 있는데 생각날 때 가끔 연다",1],
+    ["매일 쓴다. 사진이나 파일도 자주 올린다",2],
+    ["노트북에도 있고, 내 브라우저나 파일을 직접 다루게 해뒀다",3]]},
+  {tag:"사진", q:"폰에 아기 사진이 수천 장 쌓였다.", o:[
+    ["언젠가 정리해야지 하고 미뤄둔다",0],
+    ["사진 정리 잘하는 법을 AI한테 물어봤다",1],
+    ["노트북 AI가 흔들린 사진과 비슷한 사진만 골라 따로 모아준다",3],
+    ["매주 베스트컷을 골라 가족 앨범에 올리도록 AI한테 맡긴다",4]]},
+  {tag:"돌잔치", q:"돌잔치에 틀 성장 영상을 만들어야 한다.", o:[
+    ["편집 앱 쓰는 법부터 AI에게 묻는다",1],
+    ["업체에 맡기거나 손재주 좋은 지인한테 부탁한다",0],
+    ["컷 순서랑 자막 대본을 받아서 편집은 내가 한다",2],
+    ["AI가 편집 앱을 켜서 컷을 붙이는 동안 나는 아기를 본다",3]]},
+  {tag:"육아템", q:"휴대용 유모차를 하나 더 사려고 한다.", o:[
+    ["무게, 접는 방식, 예산을 주고 비교표를 만들어 달라고 한다",2],
+    ["후기 영상 서너 개 보고 마음 가는 걸로 산다",0],
+    ["\"휴대용 유모차 추천해줘\" 하고 물어본다",1],
+    ["AI가 쇼핑몰이랑 리콜 사이트를 돌아보고 정리해 온다",3]]},
+  {tag:"팩트체크", q:"AI 답이 틀렸던 적이 있다면, 그다음엔?", o:[
+    ["써본 적이 별로 없어서 잘 모르겠다",0],
+    ["그 뒤로 중요한 건 잘 안 물어본다",1],
+    ["출처 링크를 같이 달라고 하고 원문을 열어본다",2],
+    ["원문 사이트를 직접 열어 대조해 오라고 AI한테 시킨다",3]]},
+  {tag:"아침", q:"매일 아침 쌓여 있는 메일과 공지, 확인은?", o:[
+    ["출근길에 하나씩 다 열어본다",0],
+    ["긴 공지는 복사해서 AI에게 요약을 요청한다",2],
+    ["정해둔 시간이 되면 AI가 메일함을 읽고 요약해서 보내준다",4],
+    ["답장을 어떻게 쓸지 막힐 때만 AI한테 물어본다",1]]},
+  {tag:"내 시간", q:"아이 재우고 남은 30분, 제일 끌리는 건?", o:[
+    ["AI랑 이것저것 수다 떨며 궁금한 거 물어보기",1],
+    ["아이 이름이 들어간 동화책을 AI로 만들어 보기",2],
+    ["아무것도 안 하기. 폰도 내려놓기",0],
+    ["우리 집에 필요한 작은 앱을 AI한테 만들게 하기",4]]},
+  {tag:"서류", q:"복잡한 신청서(어린이집 입소, 지원금)를 채워야 한다.", o:[
+    ["안내문을 처음부터 읽으면서 직접 채운다",0],
+    ["신청 화면을 캡처해 올리고 칸마다 뭘 쓸지 정리받는다",2],
+    ["막히는 칸이 나오면 그 부분만 물어본다",1],
+    ["로그인은 내가 하고 입력은 AI가 채워둔다",3]]},
+  {tag:"요청하는 법", q:"AI한테 뭔가 요청할 때 나는?", o:[
+    ["그때그때 생각나는 대로 쓴다",1],
+    ["잘 먹혔던 문장을 메모장에 모아두고 꺼내 쓴다",2],
+    ["자주 하는 요청과 우리 집 사정을 메모 파일로 저장해 두고, AI가 일할 때마다 먼저 읽게 한다",4],
+    ["아직 AI한테 뭘 요청해 본 적이 없다",0]]},
+  {tag:"발달", q:"우리 아이 발달이 궁금할 때 나는?", o:[
+    ["공식 자료 PDF를 올리고 월령별 체크리스트로 바꿔 달라고 한다",2],
+    ["주변 부모나 맘카페에 물어본다",0],
+    ["\"이 월령이면 보통 뭐 해요?\" 하고 AI에게 물어본다",1],
+    ["AI가 매달 아이 월령에 맞는 발달 체크리스트를 알아서 보내준다",4]]}
+];
+
+const LEVELS = [
+  {name:"검색창 육아러", short:"검색창", desc:"아직은 검색창과 주변 엄마들이 제일 믿음직해요. AI는 써볼까 말까 고민 중인 단계예요.",
+   doing:["궁금하면 네이버나 맘카페에서 찾아본다","AI 앱은 없거나 거의 안 연다"],
+   next:"레벨1로 가는 법",
+   actions:[
+     {t:"AI 앱 깔고 육아 질문 하나 해보기", p:"8개월 아기가 먹어도 되는 과일이랑 처음 줄 때 주의할 점 알려줘"},
+     {t:"구글 검색할 때 'AI 모드' 눌러보기", p:"8개월 아기 낮잠 횟수"}]},
+  {name:"물어보는 육아러", short:"물어보기", desc:"검색하기 전에 AI한테 먼저 물어봐요. 답은 잘 받는데, 그걸 정리하는 건 아직 내 몫이에요.",
+   doing:["궁금한 게 생기면 AI한테 먼저 묻는다","받은 답은 내가 읽고 내가 정리한다"],
+   next:"레벨2로 가는 법",
+   actions:[
+     {t:"답 말고 결과물(식단표) 받아보기", p:"8개월 아기용 일주일 과일 식단표 만들어줘. 요일별로 표로, 처음 먹는 과일은 하루 하나씩만."},
+     {t:"사진 찍어 올리고 물어보기", p:"(과일 사진 첨부) 이 과일들 8개월 아기한테 줄 때 어떻게 손질해? 과일별로 크기랑 익힘 정도 알려줘."}]},
+  {name:"시키는 육아러", short:"시키기", desc:"AI한테 표, 문서, 요약 같은 결과물을 받아요. 다만 복사하고 붙여넣고 옮기는 건 아직 내 손으로 해요.",
+   doing:["사진이나 PDF를 올려서 정리를 맡긴다","표나 문서를 받아서 내가 옮겨 쓴다"],
+   next:"레벨3으로 가는 법",
+   actions:[
+     {t:"크롬에 AI 확장 붙여 웹 일 맡기기", p:"서울형 키즈카페 중에 이번 주 토요일 오전에 자리 남은 곳 찾아서 회차랑 남은 인원 표로 정리해줘."},
+     {t:"노트북 AI 앱에 폴더 연결해 정리 맡기기", p:"다운로드 폴더에 있는 아기 사진들 날짜별 폴더로 정리해줘. 지우지는 말고."}],
+   note:"결제나 비밀번호 입력은 AI한테 맡기지 말고 직접 하세요."},
+  {name:"맡기는 육아러", short:"맡기기", desc:"노트북 AI가 브라우저, 엑셀, 편집 앱을 직접 켜서 일해요. 나는 지시하고 확인하는 사람이에요.",
+   doing:["AI가 내 컴퓨터에서 앱을 열고 작업한다","나는 시작할 때 요청하고 끝날 때 확인한다"],
+   next:"레벨4로 가는 법",
+   actions:[
+     {t:"매일 하는 일 시간 정해서 맡기기", p:"매일 아침 7시에 메일함 확인해서 오늘 챙길 것만 세 줄로 보내줘."},
+     {t:"필요한 도구 만들어 달라고 하기", p:"우리 아이 월령에 맞는 발달 체크리스트를 폰에서 체크할 수 있는 페이지로 만들어줘."}]},
+  {name:"키우는 육아러", short:"키우기", desc:"AI로 나만의 도구를 만들고, 정해진 일은 알아서 돌아가게 해 뒀어요. AI를 같이 키워 쓰는 단계예요.",
+   doing:["직접 만든 페이지나 앱을 육아에 쓴다","매일 반복되는 일은 AI가 알아서 한다"],
+   next:"여기서 더 해볼 것",
+   actions:[
+     {t:"만든 도구 다른 부모와 나누기", p:"내가 만든 체크 페이지를 다른 부모도 쓸 수 있게 설명 문구랑 공유 링크 정리해줘."},
+     {t:"AI가 먼저 읽는 메모 파일 다듬기", p:"지금까지 내가 자주 고쳐 달라고 한 것들을 모아서 AI가 일할 때 먼저 읽을 메모 파일로 정리해줘."}]}
+];
+
+const $app = document.getElementById("app");
+let order = [], answers = [], idx = 0;
+
+function shuffle(a){ a = a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+function esc(s){ return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+function levelOf(scores){
+  const avg = scores.reduce((a,b)=>a+b,0)/scores.length;
+  let lv = avg < 0.6 ? 0 : avg < 1.5 ? 1 : avg < 2.35 ? 2 : avg < 3.1 ? 3 : 4;
+  const atLeast3 = scores.filter(s=>s>=3).length, at4 = scores.filter(s=>s===4).length;
+  if (lv >= 3 && atLeast3 < 3) lv = 2;
+  if (lv === 4 && at4 < 3) lv = 3;
+  if (lv < 4 && at4 >= 4 && atLeast3 >= 7) lv = 4;
+  return lv;
+}
+
+function meter(me){
+  return `<div class="meter" aria-hidden="true">${[0,1,2,3,4].map(i=>`<span class="${i===me?'me':(me>=0&&i<me?'on':'')}">Lv.${i}</span>`).join("")}</div>`;
+}
+
+function start(){
+  order = QUESTIONS.map(q=>({...q, o:shuffle(q.o)}));
+  answers = new Array(order.length).fill(null); idx = 0;
+  $app.innerHTML = `
+  <section class="screen hero">
+    <span class="badge">육아맘의 AI 생존일기</span>
+    <h1>우리 집<br>AI 레벨은?</h1>
+    <p class="lead">육아하면서 AI를 어디까지 쓰고 있는지 확인해 보세요. 결과에는 다음 레벨로 넘어가는 방법 두 가지가 같이 나와요.</p>
+    <div class="facts"><span class="fact">12문항</span><span class="fact">약 3분</span></div>
+    <div class="card">
+      ${meter(-1)}
+      <div class="meter-cap"><span>검색창파</span><span>AI가 알아서 일함</span></div>
+    </div>
+    <button class="btn" id="go">테스트 시작</button>
+    <p class="small on-board">정답은 없어요. 지금 하는 그대로 고르면 돼요.</p>
+  </section>${footer()}`;
+  document.getElementById("go").onclick = ()=>showQ(0);
+}
+
+function showQ(i){
+  idx = i; const q = order[i];
+  $app.innerHTML = `
+  <section class="screen">
+    <div class="top">
+      <button class="back" id="back" aria-label="이전 문항" ${i===0?'disabled':''}>←</button>
+      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${order.length}" aria-valuenow="${i}"><i style="width:${i/order.length*100}%"></i></div>
+      <span class="count">${i+1}/${order.length}</span>
+    </div>
+    <div class="card q">
+      <p class="tag">${esc(q.tag)}</p>
+      <h2>${esc(q.q)}</h2>
+    </div>
+    <div class="opts">${q.o.map((o,k)=>`<button class="opt${answers[i]===k?' picked':''}" data-k="${k}">${esc(o[0])}</button>`).join("")}</div>
+  </section>`;
+  document.getElementById("back").onclick = ()=>{ if(i>0) showQ(i-1); };
+  $app.querySelectorAll(".opt").forEach(b=>b.onclick = ()=>{
+    answers[i] = +b.dataset.k;
+    $app.querySelectorAll(".opt").forEach(x=>x.classList.toggle("picked", x===b));
+    setTimeout(()=>{ i+1 < order.length ? showQ(i+1) : result(); }, 220);
+  });
+  window.scrollTo(0,0);
+}
+
+function result(){
+  const scores = answers.map((k,i)=>order[i].o[k][1]);
+  const lv = levelOf(scores), L = LEVELS[lv];
+  $app.innerHTML = `
+  <section class="screen">
+    <span class="badge">내 결과</span>
+    <div class="card" style="display:flex;flex-direction:column;gap:14px">
+      <p class="lv-big">Lv.${lv}</p>
+      <h2 class="res-name">${L.name}</h2>
+      ${meter(lv)}
+      <p class="res-desc">${L.desc}</p>
+      <div>
+        <p class="sec-title">이런 분이에요</p>
+        <ul class="doing">${L.doing.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>
+      </div>
+    </div>
+    <div class="lvup">
+      <p class="lvup-head">레벨업을 위한 액션 아이템</p>
+      <p class="lvup-sub">${L.next}: 하나만 해도 돼요</p>
+      <ul class="checks">
+      ${L.actions.map((a,k)=>`
+        <li><label class="chk"><input type="checkbox"><span class="box" aria-hidden="true"></span><span class="ct">${esc(a.t)}</span></label>
+          <div class="pl"><span class="pt" id="p${k}">${esc(a.p)}</span><button class="copy" data-k="${k}">복사</button></div></li>`).join("")}
+      </ul>
+      ${L.note?`<p class="note">${L.note}</p>`:''}
+    </div>
+    <a class="btn" href="https://www.instagram.com/${IG_HANDLE}/" target="_blank" rel="noopener">레벨별 실제 사용법 보러 가기 @${IG_HANDLE}</a>
+    <div class="row">
+      <button class="btn ghost" id="share">결과 문구 복사</button>
+      <button class="btn ghost" id="again">다시 하기</button>
+    </div>
+  </section>${footer()}`;
+  $app.querySelectorAll(".copy").forEach(b=>b.onclick = ()=>copy(L.actions[+b.dataset.k].p, b, "복사됨", document.getElementById("p"+b.dataset.k)));
+  document.getElementById("share").onclick = e=>copy(`육아 AI 레벨 테스트 결과: Lv.${lv} ${L.name}`, e.currentTarget, "복사했어요");
+  document.getElementById("again").onclick = start;
+  window.scrollTo(0,0);
+}
+
+function copy(text, btn, done, selEl){
+  const old = btn.textContent;
+  const ok = ()=>{ btn.textContent = done; setTimeout(()=>btn.textContent = old, 1400); };
+  try{
+    navigator.clipboard.writeText(text).then(ok, ()=>fallback());
+  }catch(e){ fallback(); }
+  function fallback(){
+    if(selEl){ const r=document.createRange(); r.selectNodeContents(selEl); const s=getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent="길게 눌러 복사하세요"; setTimeout(()=>btn.textContent=old,1800); }
+  }
+}
+
+function footer(){
+  return `<footer><p>재미로 해보는 셀프체크예요. 진단이나 평가가 아니에요.</p><p>만든 사람 <a href="https://www.instagram.com/${IG_HANDLE}/" target="_blank" rel="noopener">@${IG_HANDLE}</a></p></footer>`;
+}
+
+start();
+</script>
+
+</body>
+</html>
